@@ -38,6 +38,12 @@ class Score extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addPenalty(int pts) {
+    totalScore -= pts;
+    penalties += 1;
+    notifyListeners();
+  }
+
   void selectEndDistance(int distance, int points) {
     // if a previous selection existed this remove its points first
     if (selectedEndPoints != null) {
@@ -59,7 +65,7 @@ class Score extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> exportData() {
+  Map<String, dynamic> exportData() { // holds all the values that is getting exported in a map
     return {
       'team': selectedTeam,
       'totalScore': totalScore,
@@ -70,7 +76,6 @@ class Score extends ChangeNotifier {
       'hatch': hatchCount,
     };
   }
-
 
   void resetAll() {
     totalScore = 0;
@@ -83,13 +88,6 @@ class Score extends ChangeNotifier {
     ovenCount = 0;
     hatchCount = 0;
 
-    notifyListeners();
-  }
-
-
-  void addPenalty(int pts) {
-    totalScore -= pts;
-    penalties += 1;
     notifyListeners();
   }
 

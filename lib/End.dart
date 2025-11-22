@@ -170,6 +170,7 @@ class EndPageState extends State<EndPage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            buildBox(context, 0, 0, '0 Feet (0 pts)'),
             buildBox(context, 5, 10, '5 Feet (10 pts)'),
             buildBox(context, 10, 25, '10 Feet (25 pts)'),
             buildBox(context, 15, 40, '15 Feet (40 pts)'),
@@ -183,13 +184,36 @@ class EndPageState extends State<EndPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
               onPressed: () async {
-                final confirmed = await confirmSubmit(context);
 
-                if (!confirmed) return;
+                // makes sure a team is selected
+                if (context.read<Score>().selectedTeam == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a team before submitting.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  return;
+                }
+
+                if (context.read<Score>().selectedEndDistance == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a distance before submitting.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  return;
+                }
+
+                final confirmed = await confirmSubmit(context); // shows the confirmation dialog and waits for the user to pick an options
+
+                if (!confirmed) return; // if the user doesn't confirm then stop the function immediately and don't do anythign else, exits the popup
+                // if the user does confirm it skips the if and runs the rest of the submit code
 
                 final export = context.read<Score>().exportData();
 
-                final msg =
+                final msg = // \n means new line
                     'Match Submitted\n'
                     'Team: ${export['team']}\n'
                     'Total Score: ${export['totalScore']}\n'
